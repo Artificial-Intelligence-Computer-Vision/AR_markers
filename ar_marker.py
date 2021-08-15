@@ -14,8 +14,11 @@ class ar_marker(object):
         # Create a sift feature extractor
         self.featured = cv2.xfeatures2d.SIFT_create()
 
+        # Create feature matcher
+        self.feature_matcher = cv2.BFMatcher(cv2.NORM_L1, crossCheck=True)
+
         self.feature_detection()
-        # self.feature_match()
+        self.feature_match()
 
 
 
@@ -40,22 +43,62 @@ class ar_marker(object):
         
         # Reading the images
         image1 = cv2.imread(self.path + "set_1/book_cover_1.jpg")
-        image2 = cvs.imread(self.path + "set_2/book_cover_2.jpg")
+        image2 = cv2.imread(self.path + "set_2/book_cover_3.jpg")
 
+
+        # Convert image 1
+        gray_1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
+        gray_2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
         
 
+        # Detect features from the image
+        keypoints_1, descriptors_1 = self.featured.detectAndCompute(image1, None)
+        keypoints_2, descriptors_2 = self.featured.detectAndCompute(image2, None)
+
+
+        # Match descriptors of both images
+        image_matches = self.feature_matcher.match(descriptors_1, descriptors_2)
+
+        # Sort matches by distance
+        matches = sorted(image_matches, key = lambda x:x.distance)
+
+        print("matches", len(matches))
+
+
+        matched_image = cv2.drawMatches(image1, keypoints_1, image2, keypoints_2, matches[:400], image2, flags=2)
+
+        # Save image
+        cv2.imwrite(self.save_path + "book_matched_image_2.jpg", matched_image)
 
 
 
 
 
+
+    def load_image(self):
+        pass
+
+
+
+
+    def save_images(self):
+        pass
+
+
+
+
+    # Compare modified ar marker
+    def compare_diffrence(self):
+        pass
+
+        
 
 
 
 if __name__ == "__main__":
    
 
-    # ar_markers make object
+    # Ar markers make object
     ar_marker_obj = ar_marker()
 
 
