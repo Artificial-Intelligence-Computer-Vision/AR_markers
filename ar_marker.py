@@ -59,6 +59,7 @@ class ar_marker(object):
         # Match descriptors of both images
         image_matches = self.feature_matcher.match(descriptors_1, descriptors_2)
 
+
         # Sort matches by distance
         matches = sorted(image_matches, key = lambda x:x.distance)
 
